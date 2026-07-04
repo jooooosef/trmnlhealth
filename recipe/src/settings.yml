@@ -18,6 +18,6 @@ custom_fields:
 - keyname: author_bio
   field_type: author_bio
   name: About This Plugin
-  description: Daily Apple Health summary on your TRMNL. Pairs with the open-source Health for TRMNL iOS app that reads HealthKit and pushes the data to this plugin's webhook. Setup guide in the repository.
+  description: Daily Apple Health summary on your TRMNL. Pairs with the open-source Health for TRMNL iOS app that reads HealthKit and pushes the data to this plugin's webhook. Setup guide in the repository. Independent community project, not affiliated with TRMNL.
   category: health,fitness
   github_url: https://github.com/jooooosef/trmnl-apple-health

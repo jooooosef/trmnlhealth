@@ -11,6 +11,8 @@ Between them sits a documented, versioned **JSON contract** (`docs/`): the app i
 
 Designed for self-hosting with [LaraPaper](https://github.com/usetrmnl/larapaper) (TRMNL BYOS); works against trmnl.com webhook plugins too.
 
+> Health for TRMNL is an independent community project and is **not affiliated with or endorsed by [TRMNL](https://trmnl.com)**.
+
 > Status: v1 — manual sync. Open the app, tap Sync, your dashboard updates. Background delivery (self-updating, no app launch) is the next milestone.
 
 ## How it works
