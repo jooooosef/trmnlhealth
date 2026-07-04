@@ -1,3 +1,9 @@
+{% if schema_version and schema_version > 1 %}
+<div class="layout layout--col layout--center">
+  <span class="title title--small">Recipe Update Required</span>
+  <span class="label label--gray">The app sent schema v{{ schema_version }}; this recipe renders v1</span>
+</div>
+{% else %}
 <div class="layout layout--col gap--medium">
   <div class="grid grid--cols-3 gap--medium">
     <div class="item">
@@ -99,6 +105,7 @@
   </div>
   {% endif %}
 </div>
+{% endif %}
 
 <div class="title_bar">
   <img class="image image-stroke" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" />

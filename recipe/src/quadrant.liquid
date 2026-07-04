@@ -1,3 +1,8 @@
+{% if schema_version and schema_version > 1 %}
+<div class="layout layout--col layout--center">
+  <span class="label">Update TRMNL Health recipe</span>
+</div>
+{% else %}
 <div class="layout layout--col layout--center gap--small">
   <div class="item">
     <div class="meta"></div>
@@ -10,6 +15,7 @@
   <span class="label label--small label--gray">Sleep {{ sleep.total_minutes | default: 0 | divided_by: 60 }}h {{ sleep.total_minutes | default: 0 | modulo: 60 }}m</span>
   {% endif %}
 </div>
+{% endif %}
 
 <div class="title_bar">
   <img class="image image-stroke" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" />
