@@ -7,7 +7,6 @@ ios/DerivedData/
 
 # trmnlp
 recipe/_build/
-recipe/tmp/data.json
 
 # Local environment
 dev/.env

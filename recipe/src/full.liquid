@@ -1,7 +1,107 @@
-<div class="layout layout--col layout--center">
-  <span class="title title--large">Hello, TRMNL!</span>
+<div class="layout layout--col gap--medium">
+  <div class="grid grid--cols-3 gap--medium">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-value-type="number" data-fit-value="true">{{ steps | default: "–" }}</span>
+        <span class="label">Steps</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ distance_km | default: "–" }}</span>
+        <span class="label">Distance (km)</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-value-type="number" data-fit-value="true">{{ active_energy_kcal | default: "–" }}</span>
+        <span class="label">Active Energy (kcal)</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ exercise_minutes | default: "–" }}</span>
+        <span class="label">Exercise (min)</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ resting_heart_rate_bpm | default: "–" }}</span>
+        <span class="label">Resting HR (bpm)</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ weight_kg | default: "–" }}</span>
+        <span class="label">Weight (kg)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  {% if sleep %}
+  <div class="grid">
+    <div class="col--span-4">
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="value value--large value--tnums" data-fit-value="true">{{ sleep.total_minutes | default: 0 | divided_by: 60 }}h {{ sleep.total_minutes | default: 0 | modulo: 60 }}m</span>
+          <span class="label">Sleep</span>
+          {% if sleep.start and sleep.end %}
+          <span class="label label--small label--gray">{{ sleep.start }} – {{ sleep.end }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col--span-8">
+      <div class="grid grid--cols-4">
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="value value--small value--tnums">{{ sleep.deep_minutes | default: 0 | divided_by: 60 }}h {{ sleep.deep_minutes | default: 0 | modulo: 60 }}m</span>
+            <span class="label label--small">Deep</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="value value--small value--tnums">{{ sleep.rem_minutes | default: 0 | divided_by: 60 }}h {{ sleep.rem_minutes | default: 0 | modulo: 60 }}m</span>
+            <span class="label label--small">REM</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="value value--small value--tnums">{{ sleep.core_minutes | default: 0 | divided_by: 60 }}h {{ sleep.core_minutes | default: 0 | modulo: 60 }}m</span>
+            <span class="label label--small">Core</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="value value--small value--tnums">{{ sleep.awake_minutes | default: 0 | divided_by: 60 }}h {{ sleep.awake_minutes | default: 0 | modulo: 60 }}m</span>
+            <span class="label label--small">Awake</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="flex flex--center">
+    <span class="label label--gray">No sleep data</span>
+  </div>
+  {% endif %}
 </div>
 
 <div class="title_bar">
-  <span class="title">My Plugin</span>
+  <img class="image image-stroke" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" />
+  <span class="title">TRMNL Health</span>
+  <span class="instance">{{ date }}</span>
 </div>
