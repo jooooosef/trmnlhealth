@@ -1,7 +1,7 @@
 import Foundation
 import JSONSchema
 import Testing
-@testable import TrmnlHealth
+@testable import HealthForTRMNL
 
 /// Validates the app's REAL encoder output against the same schema file
 /// that CI validates the fixture against — the two halves of the contract

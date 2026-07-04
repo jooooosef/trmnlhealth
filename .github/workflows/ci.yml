@@ -42,8 +42,8 @@ jobs:
       - run: xcodegen generate
       - run: >-
           xcodebuild test
-          -project TrmnlHealth.xcodeproj
-          -scheme TrmnlHealth
+          -project HealthForTRMNL.xcodeproj
+          -scheme HealthForTRMNL
           -destination 'platform=iOS Simulator,name=iPhone 17'
           -quiet
 

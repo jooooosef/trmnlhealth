@@ -71,7 +71,7 @@ Using trmnl.com instead: create a private plugin with the *Webhook* strategy (De
 
 ```bash
 brew install xcodegen
-cd ios && xcodegen generate && open TrmnlHealth.xcodeproj
+cd ios && xcodegen generate && open HealthForTRMNL.xcodeproj
 ```
 
 In Xcode: select your Apple ID under *Signing & Capabilities* (a free account works — the app just re-signs every 7 days), plug in your iPhone, press Run. On the phone, enable *Settings → Privacy & Security → Developer Mode* the first time.
@@ -88,7 +88,7 @@ cd recipe && trmnlp serve
 
 # iOS: build and test in the Simulator
 cd ios && xcodegen generate
-xcodebuild test -project TrmnlHealth.xcodeproj -scheme TrmnlHealth \
+xcodebuild test -project HealthForTRMNL.xcodeproj -scheme HealthForTRMNL \
   -destination 'platform=iOS Simulator,name=iPhone 17'
 
 # Validate a payload against the contract

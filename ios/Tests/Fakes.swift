@@ -1,5 +1,5 @@
 import Foundation
-@testable import TrmnlHealth
+@testable import HealthForTRMNL
 
 final class FakeHealthDataReader: HealthDataReader {
     var isAvailable = true

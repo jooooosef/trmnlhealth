@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import TrmnlHealth
+@testable import HealthForTRMNL
 
 struct SyncEngineTests {
     @Test

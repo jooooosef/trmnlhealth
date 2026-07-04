@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct TrmnlHealthApp: App {
+struct HealthForTRMNLApp: App {
     @State private var model: AppModel
 
     init() {
