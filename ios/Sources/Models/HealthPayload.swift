@@ -19,8 +19,12 @@ struct HealthPayload: Encodable {
         var distanceKm: Double?
         var activeEnergyKcal: Double?
         var exerciseMinutes: Int?
+        var standHours: Int?
         var restingHeartRateBpm: Int?
+        var hrvMs: Double?
+        var vo2Max: Double?
         var weightKg: Double?
+        var goals: Goals?
         var sleep: Sleep?
 
         enum CodingKeys: String, CodingKey {
@@ -32,9 +36,25 @@ struct HealthPayload: Encodable {
             case distanceKm = "distance_km"
             case activeEnergyKcal = "active_energy_kcal"
             case exerciseMinutes = "exercise_minutes"
+            case standHours = "stand_hours"
             case restingHeartRateBpm = "resting_heart_rate_bpm"
+            case hrvMs = "hrv_ms"
+            case vo2Max = "vo2_max"
             case weightKg = "weight_kg"
+            case goals
             case sleep
+        }
+    }
+
+    struct Goals: Encodable {
+        var moveKcal: Double?
+        var exerciseMinutes: Int?
+        var standHours: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case moveKcal = "move_kcal"
+            case exerciseMinutes = "exercise_minutes"
+            case standHours = "stand_hours"
         }
     }
 

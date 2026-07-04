@@ -3,6 +3,7 @@ import Foundation
 enum SyncError: LocalizedError {
     case healthDataUnavailable
     case noServerConfigured
+    case noHealthData
 
     var errorDescription: String? {
         switch self {
@@ -10,6 +11,8 @@ enum SyncError: LocalizedError {
             "Health data is not available on this device"
         case .noServerConfigured:
             "No server URL configured — add one in Settings"
+        case .noHealthData:
+            "No Health data was readable — check permissions in the Health app"
         }
     }
 }
@@ -34,6 +37,12 @@ final class SyncEngine {
             throw SyncError.noServerConfigured
         }
         let metrics = try await reader.dailyMetrics(for: day)
+        // An all-empty read means something systemic (permissions wiped,
+        // store locked) — POSTing it would wipe the display's last good
+        // data with dashes, so fail loudly instead.
+        guard metrics.hasAnyData else {
+            throw SyncError.noHealthData
+        }
         let payload = PayloadBuilder.build(from: metrics, generatedAt: generatedAt, timeZone: .current)
         let body = try PayloadBuilder.encode(payload)
         try await client.post(body, to: url)

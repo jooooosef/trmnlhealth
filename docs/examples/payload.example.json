@@ -8,8 +8,16 @@
     "distance_km": 6.4,
     "active_energy_kcal": 512,
     "exercise_minutes": 32,
+    "stand_hours": 11,
     "resting_heart_rate_bpm": 58,
+    "hrv_ms": 46,
+    "vo2_max": 42.5,
     "weight_kg": 78.4,
+    "goals": {
+      "move_kcal": 600,
+      "exercise_minutes": 30,
+      "stand_hours": 12
+    },
     "sleep": {
       "start": "23:12",
       "end": "07:05",

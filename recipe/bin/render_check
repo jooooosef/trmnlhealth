@@ -10,7 +10,29 @@ fail() { echo "FAIL: $1" >&2; exit 1; }
 
 SIZES="full half_horizontal half_vertical quadrant"
 
-# 1) The v1 fixture renders into every size
+# The check must not depend on local preview state: .trmnlp.yml is free
+# for developers to fiddle with while eyeballing. Back it up, then force
+# the canonical fixture (docs/examples/payload.example.json) and a known
+# custom_fields block; every pass forces its own view_style.
+cp .trmnlp.yml .trmnlp.yml.render_check_backup
+trap 'mv .trmnlp.yml.render_check_backup .trmnlp.yml' EXIT
+
+ruby -ryaml -rjson -e '
+  config = YAML.safe_load(File.read(".trmnlp.yml"))
+  vars = JSON.parse(File.read("../docs/examples/payload.example.json"))["merge_variables"]
+  config["variables"] = { "trmnl" => {} }.merge(vars)
+  config["custom_fields"] = { "view_style" => "overview" }
+  File.write(".trmnlp.yml", YAML.dump(config))
+' || fail "could not inject canonical fixture into .trmnlp.yml"
+
+set_view_style() {
+  sed -i.sedtmp "s/^  view_style: .*$/  view_style: $1/" .trmnlp.yml
+  rm -f .trmnlp.yml.sedtmp
+  grep -q "view_style: $1" .trmnlp.yml || fail "could not set view_style to $1"
+}
+
+# 1) The v1 fixture renders the overview into every size
+set_view_style overview
 trmnlp build >/dev/null
 for size in $SIZES; do
   f="_build/$size.html"
@@ -22,9 +44,26 @@ grep -q '7h 10m'     _build/full.html     || fail "sleep total missing in full"
 grep -q '2026-07-04' _build/full.html     || fail "date missing in full title bar"
 grep -q '8342'       _build/quadrant.html || fail "steps value missing in quadrant"
 
-# 2) An unknown schema_version renders the update hint instead of data
-cp .trmnlp.yml .trmnlp.yml.render_check_backup
-trap 'mv .trmnlp.yml.render_check_backup .trmnlp.yml' EXIT
+# 2) The activity view style renders rings with correct arc math
+set_view_style activity
+trmnlp build >/dev/null
+for size in full half_horizontal half_vertical; do
+  f="_build/$size.html"
+  if grep -q '{{' "$f"; then fail "unrendered Liquid in $f (activity)"; fi
+  grep -q '512 / 600'  "$f" || fail "move value/goal missing in $size"
+  grep -q 'Move · 85%' "$f" || fail "move percent missing in $size"
+  # exercise 32/30 overflows: arc must cap at the full circle (263.9)
+  # while the label shows the real percentage
+  grep -q 'stroke-dasharray="263.9 263.9"' "$f" || fail "capped exercise arc missing in $size"
+  grep -q 'Exercise · 107%' "$f" || fail "real overflow percent missing in $size"
+  grep -q 'Stand · 92%'     "$f" || fail "stand percent missing in $size"
+done
+grep -q '42.5' _build/full.html || fail "vo2 max missing in full (activity)"
+# quadrant ignores the style and keeps the overview
+grep -q '8342' _build/quadrant.html || fail "quadrant overview missing under activity style"
+
+# 3) An unknown schema_version renders the update hint instead of data
+set_view_style overview
 sed -i.sedtmp 's/^  schema_version: 1$/  schema_version: 99/' .trmnlp.yml
 rm -f .trmnlp.yml.sedtmp
 grep -q 'schema_version: 99' .trmnlp.yml || fail "could not simulate schema_version bump"

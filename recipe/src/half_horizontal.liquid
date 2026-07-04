@@ -1,7 +1,27 @@
+{% assign view_style = trmnl.plugin_settings.custom_fields_values.view_style | default: "overview" %}
 {% if schema_version and schema_version > 1 %}
 <div class="layout layout--col layout--center">
   <span class="title title--small">Recipe Update Required</span>
   <span class="label label--gray">The app sent schema v{{ schema_version }}; this recipe renders v1</span>
+</div>
+{% else %}
+{% if sleep %}
+  {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
+{% else %}
+  {% assign sleep_value = "–" %}
+{% endif %}
+{% case view_style %}
+{% when "activity" %}
+<div class="layout layout--row layout--center-y">
+  <div class="grid grid--cols-4 stretch-x">
+    {% render "activity_ring", value: active_energy_kcal, goal: goals.move_kcal, label: "Move", px: 88, row: true %}
+    {% render "activity_ring", value: exercise_minutes, goal: goals.exercise_minutes, label: "Exercise", px: 88, row: true %}
+    {% render "activity_ring", value: stand_hours, goal: goals.stand_hours, label: "Stand", px: 88, row: true %}
+    <div class="flex flex--col flex--center gap--small">
+      {% render "stat_item", value: steps, label: "Steps", number: true, size: "small", centered: true %}
+      {% render "stat_item", value: sleep_value, label: "Sleep", size: "small", centered: true %}
+    </div>
+  </div>
 </div>
 {% else %}
 <div class="layout layout--row layout--center-y">
@@ -9,14 +29,10 @@
     {% render "stat_item", value: steps, label: "Steps", number: true %}
     {% render "stat_item", value: active_energy_kcal, label: "Energy (kcal)", number: true %}
     {% render "stat_item", value: exercise_minutes, label: "Exercise (min)" %}
-    {% if sleep %}
-      {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
-    {% else %}
-      {% assign sleep_value = "–" %}
-    {% endif %}
     {% render "stat_item", value: sleep_value, label: "Sleep" %}
   </div>
 </div>
+{% endcase %}
 {% endif %}
 
 {% render "app_title_bar", date: date %}

@@ -128,16 +128,32 @@ struct TodayView: View {
             MetricCard(
                 systemImage: "flame.fill",
                 tint: .orange,
-                caption: "Active Energy",
-                value: metrics.activeEnergyKcal.map { $0.formatted(.number.precision(.fractionLength(0))) } ?? "–",
+                caption: "Move",
+                value: Self.valueWithGoal(
+                    metrics.activeEnergyKcal.map { $0.formatted(.number.precision(.fractionLength(0))) },
+                    goal: metrics.goals?.moveKcal.map { $0.formatted(.number.precision(.fractionLength(0))) }
+                ),
                 unit: "kcal"
             )
             MetricCard(
                 systemImage: "stopwatch",
                 tint: .teal,
                 caption: "Exercise",
-                value: metrics.exerciseMinutes.map { "\($0)" } ?? "–",
+                value: Self.valueWithGoal(
+                    metrics.exerciseMinutes.map { "\($0)" },
+                    goal: metrics.goals?.exerciseMinutes.map { "\($0)" }
+                ),
                 unit: "min"
+            )
+            MetricCard(
+                systemImage: "figure.stand",
+                tint: .cyan,
+                caption: "Stand",
+                value: Self.valueWithGoal(
+                    metrics.standHours.map { "\($0)" },
+                    goal: metrics.goals?.standHours.map { "\($0)" }
+                ),
+                unit: "hr"
             )
             MetricCard(
                 systemImage: "heart.fill",
@@ -147,6 +163,20 @@ struct TodayView: View {
                 unit: "bpm"
             )
             MetricCard(
+                systemImage: "waveform.path.ecg",
+                tint: .pink,
+                caption: "HRV",
+                value: metrics.hrvMs.map { $0.formatted(.number.precision(.fractionLength(0))) } ?? "–",
+                unit: "ms"
+            )
+            MetricCard(
+                systemImage: "lungs.fill",
+                tint: .mint,
+                caption: "Cardio Fitness",
+                value: metrics.vo2Max.map { $0.formatted(.number.precision(.fractionLength(0...1))) } ?? "–",
+                unit: "VO2max"
+            )
+            MetricCard(
                 systemImage: "scalemass",
                 tint: .purple,
                 caption: "Weight",
@@ -154,6 +184,13 @@ struct TodayView: View {
                 unit: "kg"
             )
         }
+    }
+
+    /// "512 / 600" when a ring goal is configured, plain value otherwise.
+    private static func valueWithGoal(_ value: String?, goal: String?) -> String {
+        guard let value else { return "–" }
+        guard let goal else { return value }
+        return "\(value) / \(goal)"
     }
 
     private var serverHint: some View {

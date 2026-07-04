@@ -28,9 +28,19 @@ defaults are applied inside the partials).
 stat_item arguments: value (default "–"), label, size (value--<size>,
 default "base"), number (adds data-value-type), fit (default true),
 big_label (regular label instead of label--small), sublabel (optional
-gray line).
+gray line), centered (centered stack without the item meta stripe —
+pairs visually with activity_ring cells).
 {% endcomment %}
 {% template stat_item %}
+{%- if centered %}
+<div class="flex flex--col flex--center">
+  <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% unless fit == false %} data-fit-value="true"{% endunless %}>{{ value | default: "–" }}</span>
+  <span class="label{% unless big_label %} label--small{% endunless %}">{{ label }}</span>
+  {%- if sublabel %}
+  <span class="label label--small label--gray">{{ sublabel }}</span>
+  {%- endif %}
+</div>
+{%- else %}
 <div class="item">
   <div class="meta"></div>
   <div class="content">
@@ -41,6 +51,61 @@ gray line).
     {%- endif %}
   </div>
 </div>
+{%- endif %}
+{% endtemplate %}
+
+{% comment %}
+activity_ring arguments: value (metric actual), goal, label, px (SVG
+side length in device pixels), row (lay SVG and text side by side).
+Geometry constants: r=42 in a 100-unit viewBox gives circumference
+2*pi*42 = 263.9, so 1% of progress = 2.639 dash units. The arc starts
+at 12 o'clock via rotate(-90). The visual arc caps at 100%; the label
+shows the real percentage. The track is a dotted black circle because
+SVG strokes cannot use the framework's gray dither patterns on 1-bit.
+{% endcomment %}
+{% template activity_ring %}
+{%- assign ring_goal = goal | default: 0 -%}
+{%- assign ring_dash = 0 -%}
+{%- assign ring_pct = 0 -%}
+{%- if value and ring_goal > 0 -%}
+  {%- assign ring_pct = value | times: 100.0 | divided_by: ring_goal | round -%}
+  {%- assign ring_cap = ring_pct -%}
+  {%- if ring_cap > 100 -%}{%- assign ring_cap = 100 -%}{%- endif -%}
+  {%- assign ring_dash = ring_cap | times: 2.639 | round: 1 -%}
+{%- endif -%}
+{%- capture ring_svg -%}
+{%- comment -%}
+stroke="currentColor" inherits .screen's text color, which the
+framework flips in dark mode (hard-coded black would vanish there).
+{%- endcomment -%}
+<svg width="{{ px }}" height="{{ px }}" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="12" stroke-dasharray="2 5.33"/>
+  {%- if ring_dash > 0 %}
+  <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="{{ ring_dash }} 263.9"/>
+  {%- endif %}
+</svg>
+{%- endcapture -%}
+{%- capture ring_value_text -%}
+{% if value %}{{ value }}{% if ring_goal > 0 %} / {{ ring_goal }}{% endif %}{% else %}–{% endif %}
+{%- endcapture -%}
+{%- capture ring_label_text -%}
+{{ label }}{% if value and ring_goal > 0 %} · {{ ring_pct }}%{% elsif value %} · No goal{% else %} · No data{% endif %}
+{%- endcapture -%}
+{% if row %}
+<div class="flex flex--row flex--center-y gap--small">
+  {{ ring_svg }}
+  <div class="flex flex--col">
+    <span class="value value--base value--tnums" data-fit-value="true">{{ ring_value_text }}</span>
+    <span class="label label--small">{{ ring_label_text }}</span>
+  </div>
+</div>
+{% else %}
+<div class="flex flex--col flex--center gap--small">
+  {{ ring_svg }}
+  <span class="value value--base value--tnums" data-fit-value="true">{{ ring_value_text }}</span>
+  <span class="label label--small">{{ ring_label_text }}</span>
+</div>
+{% endif %}
 {% endtemplate %}
 
 {% template sleep_stage_grid %}

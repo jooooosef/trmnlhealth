@@ -1,7 +1,36 @@
+{% assign view_style = trmnl.plugin_settings.custom_fields_values.view_style | default: "overview" %}
 {% if schema_version and schema_version > 1 %}
 <div class="layout layout--col layout--center">
   <span class="title title--small">Recipe Update Required</span>
   <span class="label label--gray">App schema v{{ schema_version }}; recipe renders v1</span>
+</div>
+{% else %}
+{% case view_style %}
+{% when "activity" %}
+<div class="layout layout--col gap--space-between">
+  <div class="grid grid--cols-3 gap--small">
+    {% render "activity_ring", value: active_energy_kcal, goal: goals.move_kcal, label: "Move", px: 100 %}
+    {% render "activity_ring", value: exercise_minutes, goal: goals.exercise_minutes, label: "Exercise", px: 100 %}
+    {% render "activity_ring", value: stand_hours, goal: goals.stand_hours, label: "Stand", px: 100 %}
+  </div>
+
+  <div class="divider"></div>
+
+  {% if sleep %}
+    {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
+  {% else %}
+    {% assign sleep_value = "–" %}
+  {% endif %}
+  <div class="grid grid--cols-2 gap--small">
+    {% render "stat_item", value: steps, label: "Steps", number: true, centered: true %}
+    {% render "stat_item", value: sleep_value, label: "Sleep", centered: true %}
+    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)", centered: true %}
+    {% render "stat_item", value: hrv_ms, label: "HRV (ms)", centered: true %}
+  </div>
+
+  <div class="flex flex--center">
+    {% render "stat_item", value: vo2_max, label: "VO2 Max", centered: true %}
+  </div>
 </div>
 {% else %}
 <div class="layout layout--col gap">
@@ -24,6 +53,7 @@
   <span class="label label--small label--gray">No sleep data</span>
   {% endif %}
 </div>
+{% endcase %}
 {% endif %}
 
 {% render "app_title_bar", date: date %}

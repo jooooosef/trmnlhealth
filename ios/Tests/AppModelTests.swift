@@ -48,6 +48,34 @@ struct AppModelTests {
         #expect(message.contains("No server URL"))
     }
 
+    /// After an update adds new HealthKit read types, the next sync must
+    /// (re)request authorization — HealthKit only shows a sheet for
+    /// not-yet-determined types, whose queries would otherwise throw.
+    @Test
+    func syncNowRequestsAuthorizationOnceOnboarded() async {
+        let reader = FakeHealthDataReader(metricsToReturn: TestFixtures.exampleMetrics())
+        let settings = TestFixtures.settings(urlString: "http://192.0.2.50:4567/api/custom_plugins/my-uuid")
+        settings.hasCompletedOnboarding = true
+        let engine = SyncEngine(reader: reader, client: SpyWebhookClient(), settings: settings)
+        let model = AppModel(reader: reader, engine: engine, settings: settings)
+
+        await model.syncNow()
+
+        #expect(reader.authorizationRequests == 1)
+    }
+
+    @Test
+    func syncNowSkipsAuthorizationBeforeOnboarding() async {
+        let reader = FakeHealthDataReader(metricsToReturn: TestFixtures.exampleMetrics())
+        let settings = TestFixtures.settings(urlString: "http://192.0.2.50:4567/api/custom_plugins/my-uuid")
+        let engine = SyncEngine(reader: reader, client: SpyWebhookClient(), settings: settings)
+        let model = AppModel(reader: reader, engine: engine, settings: settings)
+
+        await model.syncNow()
+
+        #expect(reader.authorizationRequests == 0)
+    }
+
     @Test
     func syncNowSurfacesServerErrorsInStatus() async {
         let client = SpyWebhookClient()

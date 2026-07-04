@@ -35,6 +35,10 @@ struct PayloadBuilderTests {
         metrics.steps = nil
         metrics.weightKg = nil
         metrics.sleep = nil
+        metrics.standHours = nil
+        metrics.hrvMs = nil
+        metrics.vo2Max = nil
+        metrics.goals = nil
 
         let payload = PayloadBuilder.build(
             from: metrics,
@@ -47,6 +51,10 @@ struct PayloadBuilderTests {
         #expect(!json.contains("steps"))
         #expect(!json.contains("weight_kg"))
         #expect(!json.contains("sleep"))
+        #expect(!json.contains("stand_hours"))
+        #expect(!json.contains("hrv_ms"))
+        #expect(!json.contains("vo2_max"))
+        #expect(!json.contains("goals"))
         #expect(!json.contains("null"))
     }
 

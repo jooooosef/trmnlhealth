@@ -36,6 +36,21 @@ struct SyncEngineTests {
     }
 
     @Test
+    func emptyMetricsFailWithoutPosting() async throws {
+        // An all-nil read (permissions wiped, store locked) must not POST:
+        // it would overwrite the display's last good data with dashes.
+        let reader = FakeHealthDataReader(metricsToReturn: DailyMetrics(day: .now))
+        let client = SpyWebhookClient()
+        let settings = TestFixtures.settings(urlString: "http://localhost:4567/api/custom_plugins/abc123")
+        let engine = SyncEngine(reader: reader, client: client, settings: settings)
+
+        await #expect(throws: SyncError.self) {
+            try await engine.sync()
+        }
+        #expect(client.posts.isEmpty)
+    }
+
+    @Test
     func readerFailurePropagatesAndNothingIsPosted() async throws {
         let reader = FakeHealthDataReader(metricsToReturn: TestFixtures.exampleMetrics())
         reader.errorToThrow = CocoaError(.fileNoSuchFile)

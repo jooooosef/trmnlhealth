@@ -15,8 +15,16 @@
         "distance_km": 6.4,
         "active_energy_kcal": 512,
         "exercise_minutes": 32,
+        "stand_hours": 11,
         "resting_heart_rate_bpm": 58,
+        "hrv_ms": 46,
+        "vo2_max": 42.5,
         "weight_kg": 78.4,
+        "goals": {
+          "move_kcal": 600,
+          "exercise_minutes": 30,
+          "stand_hours": 12
+        },
         "sleep": {
           "start": "23:12",
           "end": "07:05",
@@ -81,17 +89,52 @@
           "description": "Apple Exercise ring minutes",
           "$ref": "#/$defs/daily_minutes"
         },
+        "stand_hours": {
+          "description": "Apple Stand ring hours (hours with at least one minute of standing movement)",
+          "$ref": "#/$defs/daily_hours"
+        },
         "resting_heart_rate_bpm": {
           "description": "Resting heart rate in beats per minute",
           "$ref": "#/$defs/count"
+        },
+        "hrv_ms": {
+          "description": "Heart rate variability (SDNN) in milliseconds, averaged over the day",
+          "$ref": "#/$defs/non_negative_number"
+        },
+        "vo2_max": {
+          "description": "Most recent VO2 max (cardio fitness) in mL/kg/min. Not a daily aggregate; the Watch records it after qualifying outdoor workouts",
+          "$ref": "#/$defs/non_negative_number"
         },
         "weight_kg": {
           "description": "Most recent body mass in kilograms",
           "$ref": "#/$defs/non_negative_number"
         },
+        "goals": {
+          "description": "The user's Activity ring goals from the Fitness app",
+          "$ref": "#/$defs/goals"
+        },
         "sleep": {
           "description": "Aggregated sleep for the night ending on `date`",
           "$ref": "#/$defs/sleep"
+        }
+      },
+      "additionalProperties": false
+    },
+    "goals": {
+      "description": "Activity ring goals. Each goal is omitted when not configured on the device (Exercise and Stand goals require an Apple Watch; the Move goal is omitted for minutes-based Move mode)",
+      "type": "object",
+      "properties": {
+        "move_kcal": {
+          "description": "Move ring goal in kilocalories",
+          "$ref": "#/$defs/non_negative_number"
+        },
+        "exercise_minutes": {
+          "description": "Exercise ring goal in minutes",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "stand_hours": {
+          "description": "Stand ring goal in hours",
+          "$ref": "#/$defs/daily_hours"
         }
       },
       "additionalProperties": false
@@ -151,6 +194,12 @@
       "description": "Whole minutes within a single day",
       "type": "integer",
       "maximum": 1440,
+      "minimum": 0
+    },
+    "daily_hours": {
+      "description": "Whole hours within a single day",
+      "type": "integer",
+      "maximum": 24,
       "minimum": 0
     },
     "clock_time": {

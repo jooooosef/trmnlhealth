@@ -26,6 +26,15 @@ enum PayloadBuilder {
             )
         }
 
+        var goals: HealthPayload.Goals?
+        if let activityGoals = metrics.goals {
+            goals = HealthPayload.Goals(
+                moveKcal: activityGoals.moveKcal,
+                exerciseMinutes: activityGoals.exerciseMinutes,
+                standHours: activityGoals.standHours
+            )
+        }
+
         let variables = HealthPayload.MergeVariables(
             date: dayFormatter.string(from: metrics.day),
             generatedAt: Self.iso8601.string(from: generatedAt),
@@ -34,8 +43,12 @@ enum PayloadBuilder {
             distanceKm: metrics.distanceKm,
             activeEnergyKcal: metrics.activeEnergyKcal,
             exerciseMinutes: metrics.exerciseMinutes,
+            standHours: metrics.standHours,
             restingHeartRateBpm: metrics.restingHeartRateBpm,
+            hrvMs: metrics.hrvMs,
+            vo2Max: metrics.vo2Max,
             weightKg: metrics.weightKg,
+            goals: goals,
             sleep: sleep
         )
         return HealthPayload(mergeVariables: variables)

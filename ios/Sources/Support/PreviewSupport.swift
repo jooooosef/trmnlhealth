@@ -14,8 +14,12 @@ struct PreviewHealthDataReader: HealthDataReader {
             distanceKm: 6.4,
             activeEnergyKcal: 512,
             exerciseMinutes: 32,
+            standHours: 11,
             restingHeartRateBpm: 58,
+            hrvMs: 46,
+            vo2Max: 42.5,
             weightKg: 78.4,
+            goals: ActivityGoals(moveKcal: 600, exerciseMinutes: 30, standHours: 12),
             sleep: SleepSummary(
                 start: Calendar.current.date(byAdding: .hour, value: -9, to: day),
                 end: Calendar.current.date(byAdding: .hour, value: -1, to: day),
