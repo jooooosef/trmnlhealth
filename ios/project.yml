@@ -26,12 +26,12 @@ targets:
     info:
       path: Sources/Info.plist
       properties:
-        CFBundleDisplayName: TRMNL Health
+        CFBundleDisplayName: Health for TRMNL
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         ITSAppUsesNonExemptEncryption: false
-        NSHealthShareUsageDescription: "TRMNL Health reads your activity, sleep, and heart data to display them on your TRMNL e-ink dashboard."
+        NSHealthShareUsageDescription: "Health for TRMNL reads your activity, sleep, and heart data to display them on your TRMNL e-ink dashboard."
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
     entitlements:
@@ -41,7 +41,7 @@ targets:
         com.apple.developer.healthkit.background-delivery: true
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.trmnlhealth
+        PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.healthfortrmnl
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
@@ -62,7 +62,7 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-        PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.trmnlhealth.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.healthfortrmnl.tests
 
 schemes:
   TrmnlHealth:

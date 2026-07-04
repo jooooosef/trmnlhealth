@@ -27,7 +27,7 @@ struct SettingsView: View {
 
                 Section("About") {
                     LabeledContent("Version", value: Self.appVersion)
-                    Link(destination: URL(string: "https://github.com/jooooosef/trmnlhealth")!) {
+                    Link(destination: URL(string: "https://github.com/jooooosef/trmnl-apple-health")!) {
                         Label("Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                 }

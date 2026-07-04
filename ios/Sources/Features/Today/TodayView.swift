@@ -42,7 +42,7 @@ struct TodayView: View {
                 .padding(.bottom, 24)
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("TRMNL Health")
+            .navigationTitle("Health for TRMNL")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
