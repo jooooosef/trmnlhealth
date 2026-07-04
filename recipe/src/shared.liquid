@@ -1,5 +1,57 @@
+{% comment %}
+Shared partials. trmnlp prepends this file to every view, so the
+{% template %} definitions below are available via {% render %} in all
+sizes. {% render %} scopes are isolated: pass everything a partial
+needs as arguments (filters are not allowed in render arguments, so
+defaults are applied inside the partials).
+{% endcomment %}
+
+{% template app_title_bar %}
 {%- capture svg_logo %}
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M3 12h4l2-6 4 12 2-6h6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 {%- endcapture %}
+<div class="title_bar">
+  <img class="image image-stroke" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" />
+  <span class="title">Apple Health</span>
+  <span class="instance">{{ date }}</span>
+</div>
+{% endtemplate %}
+
+{% template duration_hm %}
+{%- assign m = minutes | default: 0 -%}
+{{- m | divided_by: 60 }}h {{ m | modulo: 60 }}m
+{% endtemplate %}
+
+{% comment %}
+stat_item arguments: value (default "–"), label, size (value--<size>,
+default "base"), number (adds data-value-type), fit (default true),
+big_label (regular label instead of label--small), sublabel (optional
+gray line).
+{% endcomment %}
+{% template stat_item %}
+<div class="item">
+  <div class="meta"></div>
+  <div class="content">
+    <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% unless fit == false %} data-fit-value="true"{% endunless %}>{{ value | default: "–" }}</span>
+    <span class="label{% unless big_label %} label--small{% endunless %}">{{ label }}</span>
+    {%- if sublabel %}
+    <span class="label label--small label--gray">{{ sublabel }}</span>
+    {%- endif %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% template sleep_stage_grid %}
+{%- capture deep_value %}{% render "duration_hm", minutes: sleep.deep_minutes %}{% endcapture -%}
+{%- capture rem_value %}{% render "duration_hm", minutes: sleep.rem_minutes %}{% endcapture -%}
+{%- capture core_value %}{% render "duration_hm", minutes: sleep.core_minutes %}{% endcapture -%}
+{%- capture awake_value %}{% render "duration_hm", minutes: sleep.awake_minutes %}{% endcapture -%}
+<div class="grid grid--cols-4">
+  {% render "stat_item", value: deep_value, label: "Deep", size: "small", fit: false %}
+  {% render "stat_item", value: rem_value, label: "REM", size: "small", fit: false %}
+  {% render "stat_item", value: core_value, label: "Core", size: "small", fit: false %}
+  {% render "stat_item", value: awake_value, label: "Awake", size: "small", fit: false %}
+</div>
+{% endtemplate %}

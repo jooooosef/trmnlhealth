@@ -4,21 +4,11 @@
 </div>
 {% else %}
 <div class="layout layout--col layout--center gap--small">
-  <div class="item">
-    <div class="meta"></div>
-    <div class="content">
-      <span class="value value--xlarge value--tnums" data-value-type="number" data-fit-value="true">{{ steps | default: "–" }}</span>
-      <span class="label">Steps</span>
-    </div>
-  </div>
+  {% render "stat_item", value: steps, label: "Steps", size: "xlarge", number: true, big_label: true %}
   {% if sleep %}
-  <span class="label label--small label--gray">Sleep {{ sleep.total_minutes | default: 0 | divided_by: 60 }}h {{ sleep.total_minutes | default: 0 | modulo: 60 }}m</span>
+  <span class="label label--small label--gray">Sleep {% render "duration_hm", minutes: sleep.total_minutes %}</span>
   {% endif %}
 </div>
 {% endif %}
 
-<div class="title_bar">
-  <img class="image image-stroke" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" />
-  <span class="title">Apple Health</span>
-  <span class="instance">{{ date }}</span>
-</div>
+{% render "app_title_bar", date: date %}

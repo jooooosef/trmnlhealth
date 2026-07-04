@@ -6,44 +6,17 @@
 {% else %}
 <div class="layout layout--row layout--center-y">
   <div class="grid grid--cols-4 stretch-x">
-    <div class="item">
-      <div class="meta"></div>
-      <div class="content">
-        <span class="value value--base value--tnums" data-value-type="number" data-fit-value="true">{{ steps | default: "–" }}</span>
-        <span class="label label--small">Steps</span>
-      </div>
-    </div>
-    <div class="item">
-      <div class="meta"></div>
-      <div class="content">
-        <span class="value value--base value--tnums" data-value-type="number" data-fit-value="true">{{ active_energy_kcal | default: "–" }}</span>
-        <span class="label label--small">Energy (kcal)</span>
-      </div>
-    </div>
-    <div class="item">
-      <div class="meta"></div>
-      <div class="content">
-        <span class="value value--base value--tnums" data-fit-value="true">{{ exercise_minutes | default: "–" }}</span>
-        <span class="label label--small">Exercise (min)</span>
-      </div>
-    </div>
-    <div class="item">
-      <div class="meta"></div>
-      <div class="content">
-        {% if sleep %}
-        <span class="value value--base value--tnums" data-fit-value="true">{{ sleep.total_minutes | default: 0 | divided_by: 60 }}h {{ sleep.total_minutes | default: 0 | modulo: 60 }}m</span>
-        {% else %}
-        <span class="value value--base">–</span>
-        {% endif %}
-        <span class="label label--small">Sleep</span>
-      </div>
-    </div>
+    {% render "stat_item", value: steps, label: "Steps", number: true %}
+    {% render "stat_item", value: active_energy_kcal, label: "Energy (kcal)", number: true %}
+    {% render "stat_item", value: exercise_minutes, label: "Exercise (min)" %}
+    {% if sleep %}
+      {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
+    {% else %}
+      {% assign sleep_value = "–" %}
+    {% endif %}
+    {% render "stat_item", value: sleep_value, label: "Sleep" %}
   </div>
 </div>
 {% endif %}
 
-<div class="title_bar">
-  <img class="image image-stroke" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" />
-  <span class="title">Apple Health</span>
-  <span class="instance">{{ date }}</span>
-</div>
+{% render "app_title_bar", date: date %}
