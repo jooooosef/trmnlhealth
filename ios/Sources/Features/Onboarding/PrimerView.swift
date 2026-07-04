@@ -42,10 +42,14 @@ struct PrimerView: View {
 
             Spacer()
 
-            Text("Your data never touches a third party.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .padding(.bottom, 12)
+            VStack(spacing: 4) {
+                Text("Your data never touches a third party.")
+                Text("Independent open source project, not affiliated with TRMNL.")
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .padding(.bottom, 12)
 
             Button {
                 isRequesting = true

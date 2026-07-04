@@ -25,11 +25,15 @@ struct SettingsView: View {
                     }
                 }
 
-                Section("About") {
+                Section {
                     LabeledContent("Version", value: Self.appVersion)
                     Link(destination: URL(string: "https://github.com/jooooosef/trmnl-apple-health")!) {
                         Label("Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
+                } header: {
+                    Text("About")
+                } footer: {
+                    Text("Health for TRMNL is an independent open source project and is not affiliated with or endorsed by TRMNL.")
                 }
             }
             .navigationTitle("Settings")
