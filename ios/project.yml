@@ -4,6 +4,19 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
 
+packages:
+  JSONSchema:
+    url: https://github.com/ajevans99/swift-json-schema
+    from: "0.13.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
 targets:
   TrmnlHealth:
     type: application
@@ -15,7 +28,10 @@ targets:
       properties:
         CFBundleDisplayName: TRMNL Health
         UILaunchScreen: {}
+        ITSAppUsesNonExemptEncryption: false
         NSHealthShareUsageDescription: "TRMNL Health reads your activity, sleep, and heart data to display them on your TRMNL e-ink dashboard."
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
     entitlements:
       path: Sources/TrmnlHealth.entitlements
       properties:
@@ -26,3 +42,31 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.trmnlhealth
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  TrmnlHealthTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+      - path: ../docs/schema/health-summary.v1.schema.json
+        buildPhase: resources
+      - path: ../docs/examples/payload.example.json
+        buildPhase: resources
+    dependencies:
+      - target: TrmnlHealth
+      - package: JSONSchema
+        product: JSONSchema
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.trmnlhealth.tests
+
+schemes:
+  TrmnlHealth:
+    build:
+      targets:
+        TrmnlHealth: all
+    test:
+      targets:
+        - TrmnlHealthTests
