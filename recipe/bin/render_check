@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Render check for the recipe: builds all four view sizes against the
+# sample data in .trmnlp.yml and asserts the fixture values actually
+# appear in the rendered HTML, that no unrendered Liquid leaks through,
+# and that the schema_version guard replaces content on unknown versions.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+fail() { echo "FAIL: $1" >&2; exit 1; }
+
+SIZES="full half_horizontal half_vertical quadrant"
+
+# 1) The v1 fixture renders into every size
+trmnlp build >/dev/null
+for size in $SIZES; do
+  f="_build/$size.html"
+  [ -s "$f" ] || fail "$f missing or empty"
+  if grep -q '{{' "$f"; then fail "unrendered Liquid in $f"; fi
+done
+grep -q '8342'       _build/full.html     || fail "steps value missing in full"
+grep -q '7h 10m'     _build/full.html     || fail "sleep total missing in full"
+grep -q '2026-07-04' _build/full.html     || fail "date missing in full title bar"
+grep -q '8342'       _build/quadrant.html || fail "steps value missing in quadrant"
+
+# 2) An unknown schema_version renders the update hint instead of data
+cp .trmnlp.yml .trmnlp.yml.render_check_backup
+trap 'mv .trmnlp.yml.render_check_backup .trmnlp.yml' EXIT
+sed -i.sedtmp 's/^  schema_version: 1$/  schema_version: 99/' .trmnlp.yml
+rm -f .trmnlp.yml.sedtmp
+grep -q 'schema_version: 99' .trmnlp.yml || fail "could not simulate schema_version bump"
+
+trmnlp build >/dev/null
+grep -q 'Recipe Update Required'       _build/full.html     || fail "version guard missing in full"
+grep -q 'Update Apple Health recipe'   _build/quadrant.html || fail "version guard missing in quadrant"
+if grep -q '8342' _build/full.html; then fail "metrics rendered despite unknown schema_version"; fi
+
+echo "render check passed"

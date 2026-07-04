@@ -30,6 +30,7 @@ jobs:
           ruby-version: "4.0"
       - run: gem install trmnl_preview
       - run: trmnlp lint
+      - run: bin/render_check
 
   ios:
     runs-on: macos-26
