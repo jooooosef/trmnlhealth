@@ -27,6 +27,8 @@ targets:
       path: Sources/Info.plist
       properties:
         CFBundleDisplayName: TRMNL Health
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         ITSAppUsesNonExemptEncryption: false
         NSHealthShareUsageDescription: "TRMNL Health reads your activity, sleep, and heart data to display them on your TRMNL e-ink dashboard."
