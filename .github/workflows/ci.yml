@@ -31,6 +31,22 @@ jobs:
       - run: gem install trmnl_preview
       - run: trmnlp lint
 
+  ios:
+    runs-on: macos-26
+    defaults:
+      run:
+        working-directory: ios
+    steps:
+      - uses: actions/checkout@v6
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      - run: >-
+          xcodebuild test
+          -project TrmnlHealth.xcodeproj
+          -scheme TrmnlHealth
+          -destination 'platform=iOS Simulator,name=iPhone 17'
+          -quiet
+
   # Auto-deploy the recipe to the LaraPaper server on merges to main.
   # Enable once the server exists: set base_url + create the TRMNL_API_KEY secret.
   #
