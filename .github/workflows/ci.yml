@@ -5,6 +5,19 @@ on:
     branches: [main]
 
 jobs:
+  validate-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: sourcemeta/jsonschema@v16.0.0
+      - run: jsonschema fmt --check docs/schema/health-summary.v1.schema.json
+      - run: jsonschema lint docs/schema/health-summary.v1.schema.json
+      - run: jsonschema metaschema docs/schema/health-summary.v1.schema.json
+      - run: >-
+          jsonschema validate --format-assertion
+          docs/schema/health-summary.v1.schema.json
+          docs/examples/payload.example.json
+
   lint-recipe:
     runs-on: ubuntu-latest
     defaults:
