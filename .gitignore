@@ -11,6 +11,7 @@ recipe/tmp/data.json
 
 # Local environment
 dev/.env
+CLAUDE.local.md
 
 # macOS
 .DS_Store
