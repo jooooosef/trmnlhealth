@@ -1,0 +1,24 @@
+{
+  "merge_variables": {
+    "schema_version": 1,
+    "date": "2026-07-04",
+    "generated_at": "2026-07-04T18:30:00Z",
+    "timezone": "Europe/Berlin",
+    "steps": 8342,
+    "distance_km": 6.4,
+    "active_energy_kcal": 512,
+    "exercise_minutes": 32,
+    "resting_heart_rate_bpm": 58,
+    "weight_kg": 78.4,
+    "sleep": {
+      "start": "23:12",
+      "end": "07:05",
+      "total_minutes": 430,
+      "in_bed_minutes": 470,
+      "deep_minutes": 62,
+      "rem_minutes": 98,
+      "core_minutes": 270,
+      "awake_minutes": 12
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/jooooosef/trmnlhealth/main/docs/schema/health-summary.v1.schema.json",
+  "title": "Apple Health daily summary — TRMNL webhook payload (v1)",
+  "description": "Body POSTed by the TrmnlHealth iOS app to a TRMNL/LaraPaper webhook plugin endpoint (POST /api/custom_plugins/{uuid}). The merge_variables object is the contract the TRMNL Health recipe renders",
+  "$comment": "Evolution rules: additive-only within v1 — new metrics are added as OPTIONAL properties here in the same PR that teaches the app to send them. Never remove, rename, retype, or change the unit of an existing key (a unit change is a rename). Metrics the user denied access to are OMITTED, never null. Breaking change: fork to health-summary.v2.schema.json and bump schema_version.",
+  "examples": [
+    {
+      "merge_variables": {
+        "schema_version": 1,
+        "date": "2026-07-04",
+        "generated_at": "2026-07-04T18:30:00Z",
+        "timezone": "Europe/Berlin",
+        "steps": 8342,
+        "distance_km": 6.4,
+        "active_energy_kcal": 512,
+        "exercise_minutes": 32,
+        "resting_heart_rate_bpm": 58,
+        "weight_kg": 78.4,
+        "sleep": {
+          "start": "23:12",
+          "end": "07:05",
+          "total_minutes": 430,
+          "in_bed_minutes": 470,
+          "deep_minutes": 62,
+          "rem_minutes": 98,
+          "core_minutes": 270,
+          "awake_minutes": 12
+        }
+      }
+    }
+  ],
+  "type": "object",
+  "required": [ "merge_variables" ],
+  "properties": {
+    "merge_variables": {
+      "$ref": "#/$defs/health_summary"
+    }
+  },
+  "$defs": {
+    "health_summary": {
+      "description": "One day of aggregated Apple Health metrics. Every metric is optional; the recipe must render gracefully with any subset present",
+      "type": "object",
+      "required": [ "schema_version", "date" ],
+      "properties": {
+        "schema_version": {
+          "description": "Contract major version. Bumped only on breaking changes; the recipe may branch on it",
+          "const": 1
+        },
+        "date": {
+          "description": "Local calendar day the summary covers (RFC 3339 full-date, in the user's timezone)",
+          "examples": [ "2026-07-04" ],
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "format": "date"
+        },
+        "generated_at": {
+          "description": "UTC timestamp when the payload was generated (RFC 3339 date-time)",
+          "examples": [ "2026-07-04T18:30:00Z" ],
+          "type": "string",
+          "format": "date-time"
+        },
+        "timezone": {
+          "description": "IANA timezone identifier the daily aggregation was computed in",
+          "examples": [ "Europe/Berlin" ],
+          "type": "string"
+        },
+        "steps": {
+          "description": "Total step count for the day",
+          "$ref": "#/$defs/count"
+        },
+        "distance_km": {
+          "description": "Walking and running distance in kilometers",
+          "$ref": "#/$defs/non_negative_number"
+        },
+        "active_energy_kcal": {
+          "description": "Active energy burned in kilocalories",
+          "$ref": "#/$defs/non_negative_number"
+        },
+        "exercise_minutes": {
+          "description": "Apple Exercise ring minutes",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "resting_heart_rate_bpm": {
+          "description": "Resting heart rate in beats per minute",
+          "$ref": "#/$defs/count"
+        },
+        "weight_kg": {
+          "description": "Most recent body mass in kilograms",
+          "$ref": "#/$defs/non_negative_number"
+        },
+        "sleep": {
+          "description": "Aggregated sleep for the night ending on `date`",
+          "$ref": "#/$defs/sleep"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sleep": {
+      "description": "Aggregated sleep session. Stage minutes are present only when the sleep source records stages",
+      "type": "object",
+      "properties": {
+        "start": {
+          "description": "Local clock time sleep began",
+          "examples": [ "23:12" ],
+          "$ref": "#/$defs/clock_time"
+        },
+        "end": {
+          "description": "Local clock time sleep ended",
+          "examples": [ "07:05" ],
+          "$ref": "#/$defs/clock_time"
+        },
+        "total_minutes": {
+          "description": "Minutes asleep across all stages, excluding awake time",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "in_bed_minutes": {
+          "description": "Minutes spent in bed",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "deep_minutes": {
+          "description": "Minutes in deep sleep",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "rem_minutes": {
+          "description": "Minutes in REM sleep",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "core_minutes": {
+          "description": "Minutes in core (light) sleep",
+          "$ref": "#/$defs/daily_minutes"
+        },
+        "awake_minutes": {
+          "description": "Minutes awake during the sleep session",
+          "$ref": "#/$defs/daily_minutes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "count": {
+      "description": "Non-negative whole number",
+      "type": "integer",
+      "minimum": 0
+    },
+    "non_negative_number": {
+      "description": "Non-negative measurement",
+      "type": "number",
+      "minimum": 0
+    },
+    "daily_minutes": {
+      "description": "Whole minutes within a single day",
+      "type": "integer",
+      "maximum": 1440,
+      "minimum": 0
+    },
+    "clock_time": {
+      "description": "Local time of day as HH:MM (24-hour)",
+      "type": "string",
+      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+    }
+  }
+}
