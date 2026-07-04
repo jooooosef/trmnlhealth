@@ -1,8 +1,8 @@
-# TRMNL Health
+# TRMNL Apple Health
 
 Apple Health on your TRMNL e-ink display.
 
-TRMNL Health is two things that speak one language:
+TRMNL Apple Health is two things that speak one language:
 
 - **An iOS app** (`ios/`) that reads your Apple Health data — steps, distance, active energy, exercise minutes, resting heart rate, weight, and sleep with stages — aggregates it into a small daily summary, and POSTs it to your TRMNL server.
 - **A TRMNL recipe** (`recipe/`) that renders that summary as a clean numbers dashboard on the e-ink display, in all four TRMNL view sizes.
@@ -19,12 +19,12 @@ Designed for self-hosting with [LaraPaper](https://github.com/usetrmnl/larapaper
 flowchart LR
     subgraph phone["iPhone"]
         AW["Apple Watch / sensors"] --> HK[("HealthKit store")]
-        HK -->|"read + aggregate<br/>daily summary"| APP["TrmnlHealth app<br/>(SwiftUI)"]
+        HK -->|"read + aggregate<br/>daily summary"| APP["Health for TRMNL app<br/>(SwiftUI)"]
     end
 
     subgraph server["LaraPaper server (Docker)"]
         WH["Webhook endpoint<br/>/api/custom_plugins/{uuid}"]
-        RECIPE["TRMNL Health recipe<br/>(Liquid templates)"]
+        RECIPE["Apple Health recipe<br/>(Liquid templates)"]
         WH -->|"merge_variables"| RECIPE
     end
 
@@ -108,7 +108,7 @@ The schema is additive-only within a major version: new metrics are added as *op
 
 | Path | Contents |
 |---|---|
-| `ios/` | TrmnlHealth iOS app (SwiftUI + HealthKit, iOS 17+). Xcode project generated via [XcodeGen](https://github.com/yonaskolb/XcodeGen) from `project.yml` |
+| `ios/` | Health for TRMNL iOS app (SwiftUI + HealthKit, iOS 17+). Xcode project generated via [XcodeGen](https://github.com/yonaskolb/XcodeGen) from `project.yml` |
 | `recipe/` | TRMNL recipe (Liquid templates, [trmnlp](https://github.com/usetrmnl/trmnlp) project) |
 | `docs/` | The payload contract: JSON Schema + example fixture |
 | `dev/` | LaraPaper via Docker Compose (local testing and production) |

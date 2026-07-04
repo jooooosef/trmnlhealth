@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/jooooosef/trmnlhealth/main/docs/schema/health-summary.v1.schema.json",
+  "$id": "https://raw.githubusercontent.com/jooooosef/trmnl-apple-health/main/docs/schema/health-summary.v1.schema.json",
   "title": "Apple Health daily summary — TRMNL webhook payload (v1)",
-  "description": "Body POSTed by the TrmnlHealth iOS app to a TRMNL/LaraPaper webhook plugin endpoint (POST /api/custom_plugins/{uuid}). The merge_variables object is the contract the TRMNL Health recipe renders",
+  "description": "Body POSTed by the Health for TRMNL iOS app to a TRMNL/LaraPaper webhook plugin endpoint (POST /api/custom_plugins/{uuid}). The merge_variables object is the contract the Apple Health recipe renders",
   "$comment": "Evolution rules: additive-only within v1 — new metrics are added as OPTIONAL properties here in the same PR that teaches the app to send them. Never remove, rename, retype, or change the unit of an existing key (a unit change is a rename). Metrics the user denied access to are OMITTED, never null. Breaking change: fork to health-summary.v2.schema.json and bump schema_version.",
   "examples": [
     {
