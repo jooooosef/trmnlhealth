@@ -12,5 +12,12 @@ polling_verb: get
 framework_version: latest
 polling_url: ''
 polling_headers: ''
-name: TRMNL Health
+name: Apple Health
 refresh_interval: 1440
+custom_fields:
+- keyname: author_bio
+  field_type: author_bio
+  name: About This Plugin
+  description: Daily Apple Health summary on your TRMNL. Pairs with the open-source Health for TRMNL iOS app that reads HealthKit and pushes the data to this plugin's webhook. Setup guide in the repository.
+  category: health,fitness
+  github_url: https://github.com/jooooosef/trmnl-apple-health
