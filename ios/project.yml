@@ -1,0 +1,28 @@
+name: TrmnlHealth
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+targets:
+  TrmnlHealth:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleDisplayName: TRMNL Health
+        UILaunchScreen: {}
+        NSHealthShareUsageDescription: "TRMNL Health reads your activity, sleep, and heart data to display them on your TRMNL e-ink dashboard."
+    entitlements:
+      path: Sources/TrmnlHealth.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.background-delivery: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.josefvalentin.trmnlhealth
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic

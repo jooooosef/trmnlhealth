@@ -1,0 +1,28 @@
+# Local LaraPaper (TRMNL BYOS) for end-to-end testing.
+#
+# Usage:
+#   export APP_KEY="base64:$(openssl rand -base64 32)"   # once; or put it in dev/.env
+#   docker compose -f dev/docker-compose.yml up -d
+#   open http://localhost:4567
+#
+# The same file works for production deployment (set APP_URL, REGISTRATION_ENABLED=0).
+services:
+  larapaper:
+    image: ghcr.io/usetrmnl/larapaper:latest
+    ports:
+      - "4567:8080"
+    environment:
+      - APP_KEY=${APP_KEY}
+      #- APP_URL=https://your-host.example
+      #- REGISTRATION_ENABLED=0
+      - PHP_OPCACHE_ENABLE=1
+      - TRMNL_PROXY_REFRESH_MINUTES=15
+      - DB_DATABASE=database/storage/database.sqlite
+    volumes:
+      - database:/var/www/html/database/storage
+      - storage:/var/www/html/storage/app/public/images/generated
+    restart: unless-stopped
+
+volumes:
+  database:
+  storage:
