@@ -7,8 +7,6 @@
 {% else %}
 {% if sleep %}
   {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
-{% else %}
-  {% assign sleep_value = "–" %}
 {% endif %}
 {% case view_style %}
 {% when "activity" %}

@@ -26,7 +26,8 @@ defaults are applied inside the partials).
 
 {% comment %}
 stat_item arguments: value (default "–"), label, size (value--<size>,
-default "base"), number (adds data-value-type), fit (default true),
+default "base"), number (adds data-value-type), fit (default true;
+never applied to a missing value so the placeholder dash stays small),
 big_label (regular label instead of label--small), sublabel (optional
 gray line), centered (centered stack without the item meta stripe —
 pairs visually with activity_ring cells).
@@ -34,7 +35,7 @@ pairs visually with activity_ring cells).
 {% template stat_item %}
 {%- if centered %}
 <div class="flex flex--col flex--center">
-  <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% unless fit == false %} data-fit-value="true"{% endunless %}>{{ value | default: "–" }}</span>
+  <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% if value and fit != false %} data-fit-value="true"{% endif %}>{{ value | default: "–" }}</span>
   <span class="label{% unless big_label %} label--small{% endunless %}">{{ label }}</span>
   {%- if sublabel %}
   <span class="label label--small label--gray">{{ sublabel }}</span>
@@ -44,7 +45,7 @@ pairs visually with activity_ring cells).
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% unless fit == false %} data-fit-value="true"{% endunless %}>{{ value | default: "–" }}</span>
+    <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% if value and fit != false %} data-fit-value="true"{% endif %}>{{ value | default: "–" }}</span>
     <span class="label{% unless big_label %} label--small{% endunless %}">{{ label }}</span>
     {%- if sublabel %}
     <span class="label label--small label--gray">{{ sublabel }}</span>

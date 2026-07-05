@@ -18,8 +18,6 @@
 
   {% if sleep %}
     {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
-  {% else %}
-    {% assign sleep_value = "–" %}
   {% endif %}
   <div class="grid grid--cols-2 gap--small">
     {% render "stat_item", value: steps, label: "Steps", number: true, centered: true %}
