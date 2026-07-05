@@ -1,10 +1,12 @@
+{% comment %}
+The quadrant is too small for the view styles; it always shows the
+compact overview.
+{% endcomment %}
 {% if schema_version and schema_version > 1 %}
-<div class="layout layout--col layout--center">
-  <span class="label">Update Apple Health recipe</span>
-</div>
+{% render "version_guard", version: schema_version, compact: true %}
 {% else %}
 <div class="layout layout--col layout--center gap--small">
-  {% render "stat_item", value: steps, label: "Steps", size: "xlarge", number: true, big_label: true %}
+  {% render "stat_item", value: steps, label: "Steps", size: "xlarge", number: true %}
   {% if sleep %}
   <span class="label label--small label--gray">Sleep {% render "duration_hm", minutes: sleep.total_minutes %}</span>
   {% endif %}

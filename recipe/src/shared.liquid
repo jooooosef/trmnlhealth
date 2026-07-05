@@ -1,9 +1,10 @@
 {% comment %}
-Shared partials. trmnlp prepends this file to every view, so the
-{% template %} definitions below are available via {% render %} in all
-sizes. {% render %} scopes are isolated: pass everything a partial
-needs as arguments (filters are not allowed in render arguments, so
-defaults are applied inside the partials).
+Shared partials and view context. trmnlp prepends this file to every
+view: the {% template %} definitions become available via {% render %}
+everywhere, and the top-level assigns at the bottom run in each view's
+own scope. {% render %} scopes are isolated — pass everything a
+partial needs as arguments (filters are not allowed in render
+arguments, so defaults are applied inside the partials).
 {% endcomment %}
 
 {% template app_title_bar %}
@@ -19,6 +20,23 @@ defaults are applied inside the partials).
 </div>
 {% endtemplate %}
 
+{% comment %}
+version_guard arguments: version (the schema_version the app sent),
+compact (quadrant-sized one-liner).
+{% endcomment %}
+{% template version_guard %}
+{% if compact %}
+<div class="layout layout--col layout--center">
+  <span class="label">Update Apple Health recipe</span>
+</div>
+{% else %}
+<div class="layout layout--col layout--center">
+  <span class="title title--small">Recipe Update Required</span>
+  <span class="label label--gray">The app sent schema v{{ version }}; this recipe renders v1</span>
+</div>
+{% endif %}
+{% endtemplate %}
+
 {% template duration_hm %}
 {%- assign m = minutes | default: 0 -%}
 {{- m | divided_by: 60 }}h {{ m | modulo: 60 }}m
@@ -26,30 +44,29 @@ defaults are applied inside the partials).
 
 {% comment %}
 stat_item arguments: value (default "–"), label, size (value--<size>,
-default "base"), number (adds data-value-type), fit (default true;
+default "base"; large/xlarge sizes get a regular label, everything
+else label--small), number (adds data-value-type), fit (default true;
 never applied to a missing value so the placeholder dash stays small),
-big_label (regular label instead of label--small), sublabel (optional
-gray line), centered (centered stack without the item meta stripe —
-pairs visually with activity_ring cells).
+sublabel (optional gray line), centered (centered stack without the
+item meta stripe — pairs visually with activity_ring cells).
 {% endcomment %}
 {% template stat_item %}
+{%- capture stat_content -%}
+<span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% if value and fit != false %} data-fit-value="true"{% endif %}>{{ value | default: "–" }}</span>
+    <span class="label{% unless size == "large" or size == "xlarge" %} label--small{% endunless %}">{{ label }}</span>
+    {%- if sublabel %}
+    <span class="label label--small label--gray">{{ sublabel }}</span>
+    {%- endif %}
+{%- endcapture -%}
 {%- if centered %}
 <div class="flex flex--col flex--center">
-  <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% if value and fit != false %} data-fit-value="true"{% endif %}>{{ value | default: "–" }}</span>
-  <span class="label{% unless big_label %} label--small{% endunless %}">{{ label }}</span>
-  {%- if sublabel %}
-  <span class="label label--small label--gray">{{ sublabel }}</span>
-  {%- endif %}
+  {{ stat_content }}
 </div>
 {%- else %}
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--{{ size | default: "base" }} value--tnums"{% if number %} data-value-type="number"{% endif %}{% if value and fit != false %} data-fit-value="true"{% endif %}>{{ value | default: "–" }}</span>
-    <span class="label{% unless big_label %} label--small{% endunless %}">{{ label }}</span>
-    {%- if sublabel %}
-    <span class="label label--small label--gray">{{ sublabel }}</span>
-    {%- endif %}
+    {{ stat_content }}
   </div>
 </div>
 {%- endif %}
@@ -121,3 +138,135 @@ framework flips in dark mode (hard-coded black would vanish there).
   {% render "stat_item", value: awake_value, label: "Awake", size: "small", fit: false %}
 </div>
 {% endtemplate %}
+
+{% comment %}
+Page partials: one template per view style and size. The size files
+only dispatch on view_style and pass the metrics through.
+{% endcomment %}
+
+{% template overview_full %}
+<div class="layout layout--col gap--medium">
+  <div class="grid grid--cols-3 gap--medium">
+    {% render "stat_item", value: steps, label: "Steps", size: "large", number: true %}
+    {% render "stat_item", value: distance_km, label: "Distance (km)", size: "large" %}
+    {% render "stat_item", value: active_energy_kcal, label: "Active Energy (kcal)", size: "large", number: true %}
+    {% render "stat_item", value: exercise_minutes, label: "Exercise (min)", size: "large" %}
+    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)", size: "large" %}
+    {% render "stat_item", value: weight_kg, label: "Weight (kg)", size: "large" %}
+  </div>
+
+  <div class="divider"></div>
+
+  {% if sleep %}
+  {% if sleep.start and sleep.end %}{% capture sleep_sublabel %}{{ sleep.start }} – {{ sleep.end }}{% endcapture %}{% endif %}
+  <div class="grid">
+    <div class="col--span-4">
+      {% render "stat_item", value: sleep_value, label: "Sleep", size: "large", sublabel: sleep_sublabel %}
+    </div>
+    <div class="col--span-8">
+      {% render "sleep_stage_grid", sleep: sleep %}
+    </div>
+  </div>
+  {% else %}
+  <div class="flex flex--center">
+    <span class="label label--gray">No sleep data</span>
+  </div>
+  {% endif %}
+</div>
+{% endtemplate %}
+
+{% template overview_half_horizontal %}
+<div class="layout layout--row layout--center-y">
+  <div class="grid grid--cols-4 stretch-x">
+    {% render "stat_item", value: steps, label: "Steps", number: true %}
+    {% render "stat_item", value: active_energy_kcal, label: "Energy (kcal)", number: true %}
+    {% render "stat_item", value: exercise_minutes, label: "Exercise (min)" %}
+    {% render "stat_item", value: sleep_value, label: "Sleep" %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% template overview_half_vertical %}
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-2 gap">
+    {% render "stat_item", value: steps, label: "Steps", number: true %}
+    {% render "stat_item", value: distance_km, label: "Distance (km)" %}
+    {% render "stat_item", value: active_energy_kcal, label: "Energy (kcal)", number: true %}
+    {% render "stat_item", value: exercise_minutes, label: "Exercise (min)" %}
+    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)" %}
+    {% render "stat_item", value: weight_kg, label: "Weight (kg)" %}
+  </div>
+
+  <div class="divider"></div>
+
+  {% if sleep %}
+  {% capture sleep_sublabel %}Deep {{ sleep.deep_minutes | default: 0 }}m · REM {{ sleep.rem_minutes | default: 0 }}m{% endcapture %}
+  {% render "stat_item", value: sleep_value, label: "Sleep", size: "medium", sublabel: sleep_sublabel %}
+  {% else %}
+  <span class="label label--small label--gray">No sleep data</span>
+  {% endif %}
+</div>
+{% endtemplate %}
+
+{% template activity_full %}
+<div class="layout layout--col gap--space-between">
+  <div class="grid grid--cols-3 gap--medium">
+    {% render "activity_ring", value: active_energy_kcal, goal: goals.move_kcal, label: "Move", px: 140 %}
+    {% render "activity_ring", value: exercise_minutes, goal: goals.exercise_minutes, label: "Exercise", px: 140 %}
+    {% render "activity_ring", value: stand_hours, goal: goals.stand_hours, label: "Stand", px: 140 %}
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid grid--cols-5">
+    {% render "stat_item", value: steps, label: "Steps", number: true, centered: true %}
+    {% render "stat_item", value: sleep_value, label: "Sleep", centered: true %}
+    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)", centered: true %}
+    {% render "stat_item", value: hrv_ms, label: "HRV (ms)", centered: true %}
+    {% render "stat_item", value: vo2_max, label: "VO2 Max", centered: true %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% template activity_half_horizontal %}
+<div class="layout layout--row layout--center-y">
+  <div class="grid grid--cols-4 stretch-x">
+    {% render "activity_ring", value: active_energy_kcal, goal: goals.move_kcal, label: "Move", px: 88, row: true %}
+    {% render "activity_ring", value: exercise_minutes, goal: goals.exercise_minutes, label: "Exercise", px: 88, row: true %}
+    {% render "activity_ring", value: stand_hours, goal: goals.stand_hours, label: "Stand", px: 88, row: true %}
+    <div class="flex flex--col flex--center gap--small">
+      {% render "stat_item", value: steps, label: "Steps", number: true, size: "small", centered: true %}
+      {% render "stat_item", value: sleep_value, label: "Sleep", size: "small", centered: true %}
+    </div>
+  </div>
+</div>
+{% endtemplate %}
+
+{% template activity_half_vertical %}
+<div class="layout layout--col gap--space-between">
+  <div class="grid grid--cols-3 gap--small">
+    {% render "activity_ring", value: active_energy_kcal, goal: goals.move_kcal, label: "Move", px: 100 %}
+    {% render "activity_ring", value: exercise_minutes, goal: goals.exercise_minutes, label: "Exercise", px: 100 %}
+    {% render "activity_ring", value: stand_hours, goal: goals.stand_hours, label: "Stand", px: 100 %}
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid grid--cols-2 gap--small">
+    {% render "stat_item", value: steps, label: "Steps", number: true, centered: true %}
+    {% render "stat_item", value: sleep_value, label: "Sleep", centered: true %}
+    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)", centered: true %}
+    {% render "stat_item", value: hrv_ms, label: "HRV (ms)", centered: true %}
+  </div>
+
+  <div class="flex flex--center">
+    {% render "stat_item", value: vo2_max, label: "VO2 Max", centered: true %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% comment %}
+View context, computed once for every size file.
+{% endcomment %}
+{% assign view_style = trmnl.plugin_settings.custom_fields_values.view_style | default: "overview" %}
+{% if sleep %}{% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}{% endif %}

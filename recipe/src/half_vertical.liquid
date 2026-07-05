@@ -1,56 +1,11 @@
-{% assign view_style = trmnl.plugin_settings.custom_fields_values.view_style | default: "overview" %}
 {% if schema_version and schema_version > 1 %}
-<div class="layout layout--col layout--center">
-  <span class="title title--small">Recipe Update Required</span>
-  <span class="label label--gray">App schema v{{ schema_version }}; recipe renders v1</span>
-</div>
+{% render "version_guard", version: schema_version %}
 {% else %}
 {% case view_style %}
 {% when "activity" %}
-<div class="layout layout--col gap--space-between">
-  <div class="grid grid--cols-3 gap--small">
-    {% render "activity_ring", value: active_energy_kcal, goal: goals.move_kcal, label: "Move", px: 100 %}
-    {% render "activity_ring", value: exercise_minutes, goal: goals.exercise_minutes, label: "Exercise", px: 100 %}
-    {% render "activity_ring", value: stand_hours, goal: goals.stand_hours, label: "Stand", px: 100 %}
-  </div>
-
-  <div class="divider"></div>
-
-  {% if sleep %}
-    {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
-  {% endif %}
-  <div class="grid grid--cols-2 gap--small">
-    {% render "stat_item", value: steps, label: "Steps", number: true, centered: true %}
-    {% render "stat_item", value: sleep_value, label: "Sleep", centered: true %}
-    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)", centered: true %}
-    {% render "stat_item", value: hrv_ms, label: "HRV (ms)", centered: true %}
-  </div>
-
-  <div class="flex flex--center">
-    {% render "stat_item", value: vo2_max, label: "VO2 Max", centered: true %}
-  </div>
-</div>
+{% render "activity_half_vertical", active_energy_kcal: active_energy_kcal, exercise_minutes: exercise_minutes, stand_hours: stand_hours, goals: goals, steps: steps, sleep_value: sleep_value, resting_heart_rate_bpm: resting_heart_rate_bpm, hrv_ms: hrv_ms, vo2_max: vo2_max %}
 {% else %}
-<div class="layout layout--col gap">
-  <div class="grid grid--cols-2 gap">
-    {% render "stat_item", value: steps, label: "Steps", number: true %}
-    {% render "stat_item", value: distance_km, label: "Distance (km)" %}
-    {% render "stat_item", value: active_energy_kcal, label: "Energy (kcal)", number: true %}
-    {% render "stat_item", value: exercise_minutes, label: "Exercise (min)" %}
-    {% render "stat_item", value: resting_heart_rate_bpm, label: "Resting HR (bpm)" %}
-    {% render "stat_item", value: weight_kg, label: "Weight (kg)" %}
-  </div>
-
-  <div class="divider"></div>
-
-  {% if sleep %}
-  {% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}
-  {% capture sleep_sublabel %}Deep {{ sleep.deep_minutes | default: 0 }}m · REM {{ sleep.rem_minutes | default: 0 }}m{% endcapture %}
-  {% render "stat_item", value: sleep_value, label: "Sleep", size: "medium", sublabel: sleep_sublabel %}
-  {% else %}
-  <span class="label label--small label--gray">No sleep data</span>
-  {% endif %}
-</div>
+{% render "overview_half_vertical", steps: steps, distance_km: distance_km, active_energy_kcal: active_energy_kcal, exercise_minutes: exercise_minutes, resting_heart_rate_bpm: resting_heart_rate_bpm, weight_kg: weight_kg, sleep: sleep, sleep_value: sleep_value %}
 {% endcase %}
 {% endif %}
 
