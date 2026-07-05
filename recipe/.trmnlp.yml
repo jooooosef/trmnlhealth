@@ -7,7 +7,7 @@ watch:
   - src
 
 # values of custom fields (defined in src/settings.yml)
-# view_style: overview | activity — flip while `trmnlp serve` runs to
+# view_style: activity | grid — flip while `trmnlp serve` runs to
 # preview the other pages
 custom_fields:
   view_style: activity

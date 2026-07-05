@@ -144,7 +144,7 @@ Page partials: one template per view style and size. The size files
 only dispatch on view_style and pass the metrics through.
 {% endcomment %}
 
-{% template overview_full %}
+{% template grid_full %}
 <div class="layout layout--col gap--medium">
   <div class="grid grid--cols-3 gap--medium">
     {% render "stat_item", value: steps, label: "Steps", size: "large", number: true %}
@@ -175,7 +175,7 @@ only dispatch on view_style and pass the metrics through.
 </div>
 {% endtemplate %}
 
-{% template overview_half_horizontal %}
+{% template grid_half_horizontal %}
 <div class="layout layout--row layout--center-y">
   <div class="grid grid--cols-4 stretch-x">
     {% render "stat_item", value: steps, label: "Steps", number: true %}
@@ -186,7 +186,7 @@ only dispatch on view_style and pass the metrics through.
 </div>
 {% endtemplate %}
 
-{% template overview_half_vertical %}
+{% template grid_half_vertical %}
 <div class="layout layout--col gap">
   <div class="grid grid--cols-2 gap">
     {% render "stat_item", value: steps, label: "Steps", number: true %}
@@ -268,5 +268,5 @@ only dispatch on view_style and pass the metrics through.
 {% comment %}
 View context, computed once for every size file.
 {% endcomment %}
-{% assign view_style = trmnl.plugin_settings.custom_fields_values.view_style | default: "overview" %}
+{% assign view_style = trmnl.plugin_settings.custom_fields_values.view_style | default: "activity" %}
 {% if sleep %}{% capture sleep_value %}{% render "duration_hm", minutes: sleep.total_minutes %}{% endcapture %}{% endif %}

@@ -30,8 +30,8 @@ set_config() { # <view_style> <schema_version>
   ' "$1" "$2" || fail "could not write test config ($1, schema v$2)"
 }
 
-# 1) The v1 fixture renders the overview into every size
-set_config overview 1
+# 1) The v1 fixture renders the metric grid into every size
+set_config grid 1
 trmnlp build >/dev/null
 for size in $SIZES; do
   f="_build/$size.html"
@@ -58,11 +58,16 @@ for size in full half_horizontal half_vertical; do
   grep -q 'Stand · 92%'     "$f" || fail "stand percent missing in $size"
 done
 grep -q '42.5' _build/full.html || fail "vo2 max missing in full (activity)"
-# quadrant ignores the style and keeps the overview
-grep -q '8342' _build/quadrant.html || fail "quadrant overview missing under activity style"
+# quadrant ignores the style and keeps its compact summary
+grep -q '8342' _build/quadrant.html || fail "quadrant summary missing under activity style"
 
-# 3) An unknown schema_version renders the update hint instead of data
-set_config overview 99
+# 3) An unknown or missing view_style falls back to the default (rings)
+set_config bogus 1
+trmnlp build >/dev/null
+grep -q '512 / 600' _build/full.html || fail "unknown view_style did not fall back to rings"
+
+# 4) An unknown schema_version renders the update hint instead of data
+set_config grid 99
 trmnlp build >/dev/null
 grep -q 'Recipe Update Required'       _build/full.html     || fail "version guard missing in full"
 grep -q 'Update Apple Health recipe'   _build/quadrant.html || fail "version guard missing in quadrant"

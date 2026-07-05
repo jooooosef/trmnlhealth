@@ -20,9 +20,9 @@ custom_fields:
   name: View Style
   description: Which page this plugin instance shows. Add the recipe multiple times with different styles to rotate several pages in a playlist.
   options:
-  - 'Overview: overview'
   - 'Activity Rings: activity'
-  default: overview
+  - 'Metric Grid: grid'
+  default: activity
 - keyname: author_bio
   field_type: author_bio
   name: About This Plugin

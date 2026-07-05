@@ -2,10 +2,10 @@
 {% render "version_guard", version: schema_version %}
 {% else %}
 {% case view_style %}
-{% when "activity" %}
-{% render "activity_half_horizontal", active_energy_kcal: active_energy_kcal, exercise_minutes: exercise_minutes, stand_hours: stand_hours, goals: goals, steps: steps, sleep_value: sleep_value %}
+{% when "grid" %}
+{% render "grid_half_horizontal", steps: steps, active_energy_kcal: active_energy_kcal, exercise_minutes: exercise_minutes, sleep_value: sleep_value %}
 {% else %}
-{% render "overview_half_horizontal", steps: steps, active_energy_kcal: active_energy_kcal, exercise_minutes: exercise_minutes, sleep_value: sleep_value %}
+{% render "activity_half_horizontal", active_energy_kcal: active_energy_kcal, exercise_minutes: exercise_minutes, stand_hours: stand_hours, goals: goals, steps: steps, sleep_value: sleep_value %}
 {% endcase %}
 {% endif %}
 
